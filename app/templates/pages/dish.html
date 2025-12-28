@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dish-view">
+    <!-- Back Navigation -->
+    <nav class="dish-view__nav">
+        <button onclick="history.back()" class="dish-view__back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Вернуться в меню</span>
+        </button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="dish-view__main">
+        <!-- Left: Image -->
+        <div class="dish-view__media">
+            <div class="dish-view__image-box">
+                {% if dish.image_medium %}
+                <img
+                    src="{{ dish.image_large or dish.image_medium }}"
+                    alt="{{ dish.name }}"
+                    class="dish-view__image"
+                    loading="eager"
+                >
+                {% else %}
+                <div class="dish-view__placeholder">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                    </svg>
+                    <span>Нет фото</span>
+                </div>
+                {% endif %}
+
+                {% if not dish.is_available or dish.is_vegetarian or dish.is_spicy %}
+                <div class="dish-view__tags">
+                    {% if not dish.is_available %}
+                    <span class="dish-view__tag dish-view__tag--gray">Временно отсутствует</span>
+                    {% endif %}
+                    {% if dish.is_vegetarian %}
+                    <span class="dish-view__tag dish-view__tag--green">Вегетарианское</span>
+                    {% endif %}
+                    {% if dish.is_spicy %}
+                    <span class="dish-view__tag dish-view__tag--red">Острое</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Scroll indicator (mobile) -->
+            <div class="dish-view__scroll-indicator">
+                <span>Подробнее</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Right: Info -->
+        <div class="dish-view__info">
+            <div class="dish-view__info-inner">
+                <!-- Category -->
+                <div class="dish-view__category">{{ dish.category.name }}</div>
+
+                <!-- Title -->
+                <h1 class="dish-view__title">{{ dish.name }}</h1>
+
+                <!-- Price FIRST -->
+                <div class="dish-view__price">{{ dish.price|int }} ₽</div>
+
+                <!-- Description / Ingredients -->
+                {% if dish.description %}
+                    {% if '\n' in dish.description %}
+                    <!-- Structured ingredients list -->
+                    <div class="dish-view__ingredients">
+                        <h3 class="dish-view__ingredients-title">Состав</h3>
+                        <ul class="dish-view__ingredients-list">
+                            {% for line in dish.description.split('\n') %}
+                                {% if line.strip() %}
+                                <li>
+                                    {% if '—' in line %}
+                                        <span class="ingredient-name">{{ line.split('—')[0].strip() }}</span>
+                                        <span class="ingredient-weight">{{ line.split('—')[1].strip() }}</span>
+                                    {% else %}
+                                        <span class="ingredient-name">{{ line.strip() }}</span>
+                                    {% endif %}
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% else %}
+                    <!-- Simple description -->
+                    <p class="dish-view__desc">{{ dish.description }}</p>
+                    {% endif %}
+                {% endif %}
+
+                <!-- Meta: Weight & Calories as simple text -->
+                {% if dish.weight or dish.calories %}
+                <div class="dish-view__meta-text">
+                    {% if dish.weight %}{{ dish.weight }}{% endif %}{% if dish.weight and dish.calories %} · {% endif %}{% if dish.calories %}{{ dish.calories }} ккал{% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

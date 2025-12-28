@@ -1,0 +1,139 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Редактировать' if dish else 'Новое' }} блюдо{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header__top">
+        <div>
+            <h1 class="page-title">{{ 'Редактировать блюдо' if dish else 'Новое блюдо' }}</h1>
+            <p class="page-subtitle">{{ 'Измените данные блюда' if dish else 'Заполните информацию о блюде' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="card card--form">
+    <div class="card__body">
+        <form method="POST" action="{{ '/admin/dishes/' ~ dish.id if dish else '/admin/dishes' }}" enctype="multipart/form-data">
+            <div class="form-section">
+                <h3 class="form-section__title">Основная информация</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label form-label--required" for="name">Название</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Название блюда"
+                               value="{{ dish.name if dish else '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label form-label--required" for="category_id">Категория</label>
+                        <select id="category_id" name="category_id" class="form-input form-select" required>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {{ 'selected' if dish and dish.category_id == cat.id else '' }}>
+                                {{ cat.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Описание</label>
+                    <textarea id="description" name="description" class="form-input form-textarea" placeholder="Опишите состав или особенности блюда">{{ dish.description if dish else '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section__title">Цена и характеристики</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label form-label--required" for="price">Цена (₽)</label>
+                        <input type="number" id="price" name="price" class="form-input" step="0.01" min="0" placeholder="0"
+                               value="{{ dish.price if dish else '' }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="weight">Вес</label>
+                        <input type="text" id="weight" name="weight" class="form-input" placeholder="Например: 250г"
+                               value="{{ dish.weight if dish else '' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="calories">Калории</label>
+                        <input type="number" id="calories" name="calories" class="form-input" min="0" placeholder="0"
+                               value="{{ dish.calories if dish else '' }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="sort_order">Порядок сортировки</label>
+                    <input type="number" id="sort_order" name="sort_order" class="form-input form-input--narrow" min="0"
+                           value="{{ dish.sort_order if dish else 0 }}">
+                    <p class="form-hint">Блюда отображаются в порядке возрастания этого числа</p>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section__title">Изображение</h3>
+
+                <div class="form-group">
+                    {% if dish and dish.image_medium %}
+                    <div class="image-preview">
+                        <img src="{{ dish.image_medium }}" alt="{{ dish.name }}">
+                    </div>
+                    <p class="form-hint form-hint--spaced">Текущее изображение. Загрузите новое, чтобы заменить.</p>
+                    {% endif %}
+
+                    <label class="file-upload {{ 'file-upload--spaced' if dish and dish.image_medium else '' }}" for="image">
+                        <svg class="file-upload__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="file-upload__text">Нажмите для загрузки или перетащите файл</p>
+                        <p class="file-upload__hint">JPG, PNG или WebP. Макс. 5MB</p>
+                        <input type="file" id="image" name="image" accept="image/*">
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section__title">Параметры</h3>
+
+                <div class="form-checkbox-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="is_available" value="true"
+                               {{ 'checked' if not dish or dish.is_available else '' }}>
+                        <span>В наличии</span>
+                    </label>
+
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="is_vegetarian" value="true"
+                               {{ 'checked' if dish and dish.is_vegetarian else '' }}>
+                        <span>Вегетарианское</span>
+                    </label>
+
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="is_spicy" value="true"
+                               {{ 'checked' if dish and dish.is_spicy else '' }}>
+                        <span>Острое</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    {{ 'Сохранить изменения' if dish else 'Создать блюдо' }}
+                </button>
+                <a href="/admin/dishes" class="btn btn--secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

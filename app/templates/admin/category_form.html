@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ 'Редактировать' if category else 'Новая' }} категория{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header__top">
+        <div>
+            <h1 class="page-title">{{ 'Редактировать категорию' if category else 'Новая категория' }}</h1>
+            <p class="page-subtitle">{{ 'Измените данные категории' if category else 'Заполните информацию о категории' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="max-width: 640px;">
+    <div class="card__body">
+        <form method="POST" action="{{ '/admin/categories/' ~ category.id if category else '/admin/categories' }}">
+            <div class="form-section">
+                <h3 class="form-section__title">Основная информация</h3>
+
+                <div class="form-group">
+                    <label class="form-label form-label--required" for="name">Название</label>
+                    <input type="text" id="name" name="name" class="form-input" placeholder="Например: Горячие блюда"
+                           value="{{ category.name if category else '' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">Описание</label>
+                    <textarea id="description" name="description" class="form-input form-textarea" placeholder="Краткое описание категории (необязательно)">{{ category.description if category else '' }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section__title">Настройки</h3>
+
+                <div class="form-group">
+                    <label class="form-label" for="sort_order">Порядок сортировки</label>
+                    <input type="number" id="sort_order" name="sort_order" class="form-input" style="max-width: 150px;"
+                           value="{{ category.sort_order if category else 0 }}" min="0">
+                    <p class="form-hint">Категории отображаются в порядке возрастания этого числа</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-checkbox-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" name="is_active" value="true"
+                                   {{ 'checked' if not category or category.is_active else '' }}>
+                            <span>Активна (показывать на сайте)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn--primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    {{ 'Сохранить изменения' if category else 'Создать категорию' }}
+                </button>
+                <a href="/admin/categories" class="btn btn--secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

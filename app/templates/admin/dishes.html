@@ -1,0 +1,111 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Блюда{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header__top">
+        <div>
+            <h1 class="page-title">Блюда</h1>
+            <p class="page-subtitle">Управление блюдами меню</p>
+        </div>
+        <a href="/admin/dishes/new" class="btn btn--primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Добавить блюдо
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    {% if dishes %}
+    <div class="table-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dish in dishes %}
+                <tr>
+                    <td>
+                        {% if dish.image_thumbnail %}
+                        <img src="{{ dish.image_thumbnail }}" alt="{{ dish.name }}" class="dish-thumb">
+                        {% else %}
+                        <div class="dish-thumb dish-thumb--placeholder">🍽️</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ dish.name }}</strong>
+                        {% if dish.is_vegetarian or dish.is_spicy %}
+                        <div class="dish-badges">
+                            {% if dish.is_vegetarian %}
+                            <span class="dish-badge dish-badge--success">Веган</span>
+                            {% endif %}
+                            {% if dish.is_spicy %}
+                            <span class="dish-badge dish-badge--danger">Острое</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ dish.category.name }}</td>
+                    <td><strong>{{ dish.price|int }} ₽</strong></td>
+                    <td>
+                        {% if dish.is_available %}
+                        <span class="status-badge status-badge--active">В наличии</span>
+                        {% else %}
+                        <span class="status-badge status-badge--inactive">Нет в наличии</span>
+                        {% endif %}
+                    </td>
+                    <td class="table__actions">
+                        <a href="/admin/dishes/{{ dish.id }}/edit" class="btn btn--secondary btn--small">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Изменить
+                        </a>
+                        <form method="POST" action="/admin/dishes/{{ dish.id }}/delete" class="inline-form" onsubmit="return confirm('Удалить блюдо «{{ dish.name }}»?')">
+                            <button type="submit" class="btn btn--danger btn--small">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+        <h3 class="empty-state__title">Блюд пока нет</h3>
+        <p class="empty-state__text">Добавьте первое блюдо в меню</p>
+        <a href="/admin/dishes/new" class="btn btn--primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Добавить блюдо
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

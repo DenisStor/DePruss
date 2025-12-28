@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block mobile_nav %}
+{% for category in categories %}
+{% if category.dishes %}
+<a href="#{{ category.slug }}" class="mobile-menu__link">{{ category.name }}</a>
+{% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <!-- Main content -->
+    <div class="hero__content">
+        <div class="hero__badge">
+            <span class="hero__badge-icon">✦</span>
+            Авторская кухня
+            <span class="hero__badge-icon">✦</span>
+        </div>
+
+        <h1 class="hero__title">Кухня Де Прусс</h1>
+
+        <!-- Decorative divider -->
+        <div class="hero__divider">
+            <span></span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+            <span></span>
+        </div>
+
+        <p class="hero__subtitle">Каждое блюдо — это история вкуса, созданная<br>с любовью и вниманием к деталям</p>
+    </div>
+
+</section>
+
+<!-- Category Filter Bar -->
+<nav class="category-filter" id="categoryFilter">
+    <div class="category-filter__container">
+        <div class="category-filter__scroll" id="categoryFilterScroll">
+            {% for category in categories %}
+            {% if category.dishes %}
+            <a href="#{{ category.slug }}" class="category-filter__item" data-category="{{ category.slug }}">
+                <span class="category-filter__icon">
+                    {% if 'бриошь' in category.name.lower() %}🥐
+                    {% elif 'закуск' in category.name.lower() or 'салат' in category.name.lower() %}🥗
+                    {% elif 'суп' in category.name.lower() %}🍲
+                    {% elif 'горячее' in category.name.lower() %}🍖
+                    {% elif 'бранч' in category.name.lower() %}🍳
+                    {% elif 'выпечк' in category.name.lower() %}🥧
+                    {% elif 'десерт' in category.name.lower() %}🍰
+                    {% elif 'напитк' in category.name.lower() %}🥤
+                    {% elif 'кофе' in category.name.lower() or 'чай' in category.name.lower() %}☕
+                    {% elif 'вайн' in category.name.lower() or 'вино' in category.name.lower() %}🍷
+                    {% elif 'пиво' in category.name.lower() %}🍺
+                    {% elif 'снек' in category.name.lower() %}🥨
+                    {% else %}🍽️
+                    {% endif %}
+                </span>
+                <span class="category-filter__name">{{ category.name }}</span>
+                <span class="category-filter__count">{{ category.dishes|length }}</span>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="category-filter__fade category-filter__fade--left"></div>
+        <div class="category-filter__fade category-filter__fade--right"></div>
+    </div>
+</nav>
+
+{% for category in categories %}
+{% if category.dishes %}
+<section class="category" id="{{ category.slug }}">
+    <div class="category__header">
+        <h2 class="category__title">{{ category.name }}</h2>
+        <span class="category__count">{{ category.dishes|length }} {{ category.dishes|length|declension('блюдо', 'блюда', 'блюд') if declension else '' }}</span>
+    </div>
+
+    <div class="dishes-grid">
+        {% for dish in category.dishes %}
+        <a href="/dish/{{ dish.slug }}" class="dish-card scroll-reveal {{ 'dish-card--unavailable' if not dish.is_available else '' }}" data-delay="{{ loop.index0 * 50 }}">
+            <div class="dish-card__image">
+                {% if dish.image_small %}
+                <img
+                    src="{{ dish.image_thumbnail or '/static/images/placeholder.webp' }}"
+                    data-src="{{ dish.image_medium }}"
+                    data-srcset="{{ dish.image_small }} 600w, {{ dish.image_medium }} 1200w"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                    alt="{{ dish.name }}"
+                    loading="lazy"
+                    class="blur-up"
+                >
+                {% else %}
+                <div class="no-image">🍽️</div>
+                {% endif %}
+
+                <div class="dish-card__badges">
+                    {% if not dish.is_available %}
+                    <span class="badge badge--unavailable">Нет в наличии</span>
+                    {% endif %}
+                    {% if dish.is_vegetarian %}
+                    <span class="badge badge--veg" title="Вегетарианское">Веган</span>
+                    {% endif %}
+                    {% if dish.is_spicy %}
+                    <span class="badge badge--spicy" title="Острое">Острое</span>
+                    {% endif %}
+                </div>
+
+                {% if not dish.is_available %}
+                <div class="dish-card__overlay">
+                    <span>Временно отсутствует</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="dish-card__content">
+                <h3 class="dish-card__title">{{ dish.name }}</h3>
+                <div class="dish-card__meta">
+                    {% if dish.weight %}
+                    <span>{{ dish.weight }}</span>
+                    {% endif %}
+                    {% if dish.weight and dish.calories %}
+                    <span class="dish-card__meta-dot"></span>
+                    {% endif %}
+                    {% if dish.calories %}
+                    <span>{{ dish.calories }} ккал</span>
+                    {% endif %}
+                </div>
+                <div class="dish-card__footer">
+                    <p class="dish-card__price">{{ dish.price|int }} ₽</p>
+                    <span class="dish-card__arrow">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endfor %}
+
+{% if not categories %}
+<div class="empty-state">
+    <div class="empty-state__icon">🍽️</div>
+    <h3 class="empty-state__title">Меню скоро появится</h3>
+    <p class="empty-state__text">Мы готовим для вас что-то особенное. Загляните чуть позже!</p>
+</div>
+{% endif %}
+{% endblock %}
