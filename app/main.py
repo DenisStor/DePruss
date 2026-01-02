@@ -10,6 +10,7 @@ except ImportError:
     BROTLI_AVAILABLE = False
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.formparsers import MultiPartParser
 from datetime import datetime
 
 from app.config import get_settings
@@ -20,6 +21,9 @@ from app.models.dish import Dish
 from sqlalchemy import select
 
 settings = get_settings()
+
+# Increase multipart form size limit (default is 1MB, we need unlimited for large images)
+MultiPartParser.max_file_size = 1024 * 1024 * 1024  # 1GB
 
 
 # Cache headers middleware
