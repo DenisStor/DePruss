@@ -1,0 +1,98 @@
+/* ===========================================
+   Loading States (Skeletons)
+   =========================================== */
+
+/* Skeleton Animations */
+@keyframes skeleton-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes skeleton-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Base Skeleton */
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-elevated);
+    border-radius: var(--radius-md);
+}
+
+.skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(212, 160, 23, 0.08) 50%,
+        transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.skeleton-card__image {
+    aspect-ratio: 1;
+    background: var(--bg-elevated);
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-card__image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(212, 160, 23, 0.08) 50%,
+        transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+.skeleton-card__content {
+    padding: 1.125rem;
+}
+
+.skeleton-card__title {
+    height: 1rem;
+    width: 85%;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-card__title:nth-child(2) {
+    width: 60%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-card__meta {
+    height: 0.75rem;
+    width: 40%;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    animation: skeleton-pulse 1.5s ease-in-out infinite 0.2s;
+}
+
+.skeleton-card__price {
+    height: 1.5rem;
+    width: 30%;
+    background: var(--mustard-subtle);
+    border-radius: 4px;
+    animation: skeleton-pulse 1.5s ease-in-out infinite 0.4s;
+}

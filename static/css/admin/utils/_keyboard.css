@@ -1,0 +1,105 @@
+/* ========================================
+   KEYBOARD SHORTCUTS
+   ======================================== */
+
+/* Keyboard Element */
+kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 var(--space-2);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+/* Shortcuts Modal List */
+.shortcuts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.shortcuts-group h4 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+}
+
+.shortcut-item span {
+    margin-left: auto;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+}
+
+/* Keyboard Hint Badge */
+.keyboard-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    color: var(--color-text-muted);
+}
+
+.keyboard-hint kbd {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+}
+
+/* Header Keyboard Hint */
+.header-keyboard-hint {
+    position: fixed;
+    bottom: var(--space-4);
+    right: var(--space-4);
+    z-index: 100;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.header-keyboard-hint:hover {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .shortcuts-list {
+        gap: var(--space-4);
+    }
+
+    .shortcut-item {
+        flex-wrap: wrap;
+    }
+
+    .shortcut-item span {
+        width: 100%;
+        margin-left: 0;
+        margin-top: var(--space-1);
+    }
+
+    .header-keyboard-hint {
+        display: none;
+    }
+}

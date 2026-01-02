@@ -2,66 +2,122 @@
 
 {% block title %}Категории{% endblock %}
 
+{% block breadcrumbs %}
+<a href="/admin" class="admin-breadcrumbs__item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    </svg>
+</a>
+<span class="admin-breadcrumbs__separator">/</span>
+<span class="admin-breadcrumbs__current">Категории</span>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div class="page-header__top">
         <div>
             <h1 class="page-title">Категории</h1>
-            <p class="page-subtitle">Управление категориями меню</p>
+            <p class="page-subtitle">Всего категорий: <span id="totalCount">{{ categories|length }}</span></p>
         </div>
-        <a href="/admin/categories/new" class="btn btn--primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Добавить категорию
-        </a>
+        <div class="page-header__actions">
+            <a href="/admin/categories/new" class="btn btn--primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Добавить категорию
+            </a>
+        </div>
     </div>
 </div>
 
 <div class="card">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-bar__left">
+            <div class="filter-bar__search">
+                <svg class="filter-bar__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" class="filter-bar__input" placeholder="Поиск по названию...">
+            </div>
+            <select id="statusFilter" class="filter-bar__select">
+                <option value="">Все статусы</option>
+                <option value="true">Активные</option>
+                <option value="false">Скрытые</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Active Filters Chips -->
+    <div class="filter-chips u-hidden" id="filterChips">
+        <span class="filter-chips__label">Фильтры:</span>
+        <div class="filter-chips__list" id="filterChipsList"></div>
+        <button type="button" class="filter-chips__clear" onclick="clearAllFilters()">Сбросить все</button>
+    </div>
+
     {% if categories %}
     <div class="table-wrapper">
-        <table class="table">
+        <table class="table table--sortable table--hoverable" id="categoriesTable">
             <thead>
                 <tr>
+                    <th class="table__th--w-80 table__th--center">Порядок</th>
                     <th>Название</th>
                     <th>Slug</th>
-                    <th>Порядок</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
+                    <th class="table__th--w-80 table__th--center">Блюд</th>
+                    <th class="table__th--w-100 table__th--center">Статус</th>
+                    <th class="table__th--w-100 table__th--center">Действия</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="categoriesTableBody">
                 {% for cat in categories %}
-                <tr>
-                    <td><strong>{{ cat.name }}</strong></td>
-                    <td><code class="slug-code">{{ cat.slug }}</code></td>
-                    <td>{{ cat.sort_order }}</td>
-                    <td>
-                        {% if cat.is_active %}
-                        <span class="status-badge status-badge--active">Активна</span>
-                        {% else %}
-                        <span class="status-badge status-badge--inactive">Скрыта</span>
-                        {% endif %}
-                    </td>
-                    <td class="table__actions">
-                        <a href="/admin/categories/{{ cat.id }}/edit" class="btn btn--secondary btn--small">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            Изменить
-                        </a>
-                        <form method="POST" action="/admin/categories/{{ cat.id }}/delete" class="inline-form" onsubmit="return confirm('Удалить категорию «{{ cat.name }}»?')">
-                            <button type="submit" class="btn btn--danger btn--small">
+                <tr data-id="{{ cat.id }}" data-active="{{ 'true' if cat.is_active else 'false' }}">
+                    <td class="table__td--center">
+                        <div class="reorder-controls">
+                            <button type="button" class="reorder-btn reorder-btn--up" onclick="moveRow(this, 'up')" title="Вверх">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </button>
+                            <span class="reorder-position">{{ loop.index }}</span>
+                            <button type="button" class="reorder-btn reorder-btn--down" onclick="moveRow(this, 'down')" title="Вниз">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>{{ cat.name }}</strong>
+                    </td>
+                    <td>
+                        <code class="slug-code">{{ cat.slug }}</code>
+                    </td>
+                    <td class="table__td--center">
+                        <span class="dishes-count-badge">{{ cat.dishes|length }}</span>
+                    </td>
+                    <td class="table__td--center">
+                        <label class="toggle-switch">
+                            <input type="checkbox" {% if cat.is_active %}checked{% endif %} onchange="toggleActive({{ cat.id }}, this.checked)">
+                            <span class="toggle-switch__slider"></span>
+                        </label>
+                    </td>
+                    <td class="table__td--center">
+                        <div class="action-buttons">
+                            <a href="/admin/categories/{{ cat.id }}/edit" class="btn btn--icon" title="Редактировать">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </a>
+                            <button type="button" class="btn btn--icon btn--icon-danger" onclick="deleteCategory({{ cat.id }}, '{{ cat.name|e }}', {{ cat.dishes|length }})" title="Удалить">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                 </svg>
-                                Удалить
                             </button>
-                        </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -85,4 +141,309 @@
     </div>
     {% endif %}
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// State
+
+// DOM Elements
+const searchInput = document.getElementById('searchInput');
+const statusFilter = document.getElementById('statusFilter');
+const filterChips = document.getElementById('filterChips');
+const filterChipsList = document.getElementById('filterChipsList');
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore filters from URL
+    restoreFiltersFromURL();
+
+    // Setup event listeners
+    searchInput?.addEventListener('input', debounce(applyFilters, 300));
+    statusFilter?.addEventListener('change', applyFilters);
+
+    // Update reorder button states
+    updateReorderButtons();
+
+    // Init drag and drop
+    initDragAndDrop();
+});
+
+// Reorder functions
+let draggedRow = null;
+
+function initDragAndDrop() {
+    const rows = document.querySelectorAll('#categoriesTableBody tr[data-id]');
+
+    rows.forEach(row => {
+        row.draggable = true;
+
+        row.addEventListener('dragstart', (e) => {
+            draggedRow = row;
+            row.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        row.addEventListener('dragend', () => {
+            row.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(r => r.classList.remove('drag-over'));
+            draggedRow = null;
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!draggedRow || row === draggedRow) return;
+            e.dataTransfer.dropEffect = 'move';
+            row.classList.add('drag-over');
+        });
+
+        row.addEventListener('dragleave', () => {
+            row.classList.remove('drag-over');
+        });
+
+        row.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            row.classList.remove('drag-over');
+
+            if (!draggedRow || row === draggedRow) return;
+
+            const tbody = row.parentElement;
+            const allRows = Array.from(tbody.children);
+            const draggedIndex = allRows.indexOf(draggedRow);
+            const targetIndex = allRows.indexOf(row);
+
+            if (draggedIndex < targetIndex) {
+                tbody.insertBefore(draggedRow, row.nextSibling);
+            } else {
+                tbody.insertBefore(draggedRow, row);
+            }
+
+            updatePositionNumbers();
+            updateReorderButtons();
+            await saveOrder();
+        });
+    });
+}
+
+async function moveRow(btn, direction) {
+    const row = btn.closest('tr');
+    const tbody = row.parentElement;
+    const rows = Array.from(tbody.querySelectorAll('tr[data-id]'));
+    const index = rows.indexOf(row);
+
+    let targetRow;
+    if (direction === 'up' && index > 0) {
+        targetRow = rows[index - 1];
+        tbody.insertBefore(row, targetRow);
+    } else if (direction === 'down' && index < rows.length - 1) {
+        targetRow = rows[index + 1];
+        tbody.insertBefore(targetRow, row);
+    } else {
+        return;
+    }
+
+    updatePositionNumbers();
+    updateReorderButtons();
+    await saveOrder();
+}
+
+function updatePositionNumbers() {
+    const rows = document.querySelectorAll('#categoriesTableBody tr');
+    rows.forEach((row, index) => {
+        const posEl = row.querySelector('.reorder-position');
+        if (posEl) posEl.textContent = index + 1;
+    });
+}
+
+function updateReorderButtons() {
+    const rows = document.querySelectorAll('#categoriesTableBody tr');
+    rows.forEach((row, index) => {
+        const upBtn = row.querySelector('.reorder-btn--up');
+        const downBtn = row.querySelector('.reorder-btn--down');
+        if (upBtn) upBtn.disabled = index === 0;
+        if (downBtn) downBtn.disabled = index === rows.length - 1;
+    });
+}
+
+async function saveOrder() {
+    const rows = document.querySelectorAll('#categoriesTableBody tr[data-id]');
+    const items = Array.from(rows).map((row, index) => ({
+        id: parseInt(row.dataset.id),
+        sort_order: index
+    }));
+
+    try {
+        const response = await fetch('/admin/api/categories/reorder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items })
+        });
+
+        if (!response.ok) throw new Error('Failed to save order');
+        toast.success('Порядок сохранён');
+    } catch (error) {
+        toast.error('Ошибка', 'Не удалось сохранить порядок');
+        console.error(error);
+    }
+}
+
+// Debounce helper
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Filtering
+function applyFilters() {
+    const searchTerm = searchInput?.value.toLowerCase() || '';
+    const status = statusFilter?.value || '';
+
+    // Update URL
+    updateURLParams({ search: searchTerm, status: status });
+
+    // Update filter chips
+    updateFilterChips();
+
+    // Filter table rows
+    const rows = document.querySelectorAll('#categoriesTableBody tr');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const nameEl = row.querySelector('td:nth-child(3) strong');
+        const name = nameEl?.textContent.toLowerCase() || '';
+        const isActive = row.dataset.active;
+
+        let show = true;
+
+        if (searchTerm && !name.includes(searchTerm)) show = false;
+        if (status && isActive !== status) show = false;
+
+        row.classList.toggle('u-hidden', !show);
+        if (show) visibleCount++;
+    });
+
+    // Update count
+    document.getElementById('totalCount').textContent = visibleCount;
+}
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// URL params
+function updateURLParams(params) {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+            url.searchParams.set(key, value);
+        } else {
+            url.searchParams.delete(key);
+        }
+    });
+    window.history.replaceState({}, '', url);
+}
+
+function restoreFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('search') && searchInput) {
+        searchInput.value = params.get('search');
+    }
+    if (params.get('status') && statusFilter) {
+        statusFilter.value = params.get('status');
+    }
+
+    applyFilters();
+}
+
+// Filter chips
+function updateFilterChips() {
+    const chips = [];
+
+    if (searchInput?.value) {
+        chips.push({ type: 'search', label: `Поиск: ${searchInput.value}`, clear: () => { searchInput.value = ''; applyFilters(); } });
+    }
+    if (statusFilter?.value) {
+        const option = statusFilter.options[statusFilter.selectedIndex];
+        chips.push({ type: 'status', label: option.text, clear: () => { statusFilter.value = ''; applyFilters(); } });
+    }
+
+    filterChips.classList.toggle('u-hidden', chips.length === 0);
+    filterChipsList.innerHTML = chips.map((chip, i) => `
+        <span class="filter-chip">
+            ${chip.label}
+            <button type="button" onclick="clearFilter(${i})" class="filter-chip__remove">×</button>
+        </span>
+    `).join('');
+
+    window._filterChips = chips;
+}
+
+function clearFilter(index) {
+    window._filterChips[index]?.clear();
+}
+
+function clearAllFilters() {
+    if (searchInput) searchInput.value = '';
+    if (statusFilter) statusFilter.value = '';
+    applyFilters();
+}
+
+// Toggle active status
+async function toggleActive(id, isActive) {
+    try {
+        const response = await fetch(`/admin/api/categories/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_active: isActive })
+        });
+
+        if (response.ok) {
+            // Update row data attribute
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (row) {
+                row.dataset.active = isActive.toString();
+            }
+            toast.success('Статус обновлен');
+        } else {
+            const data = await response.json();
+            toast.error('Ошибка', data.detail || 'Не удалось обновить статус');
+        }
+    } catch (error) {
+        toast.error('Ошибка', 'Произошла ошибка');
+    }
+}
+
+// Delete category
+async function deleteCategory(id, name, dishesCount) {
+    if (dishesCount > 0) {
+        toast.error('Невозможно удалить', `Категория «${name}» содержит ${dishesCount} блюд. Сначала переместите или удалите блюда.`);
+        return;
+    }
+
+    const confirmed = await modal.confirm({
+        title: 'Удаление категории',
+        message: `Вы уверены, что хотите удалить категорию «${name}»?`,
+        confirmText: 'Удалить',
+        cancelText: 'Отмена',
+        type: 'danger'
+    });
+
+    if (confirmed) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/categories/${id}/delete`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 {% endblock %}

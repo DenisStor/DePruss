@@ -1,0 +1,172 @@
+/* ========================================
+   DISHES PAGE
+   ======================================== */
+
+/* Drag and Drop for Dishes */
+#dishesTableBody tr[data-id] {
+    cursor: grab;
+}
+
+#dishesTableBody tr[data-id]:active {
+    cursor: grabbing;
+}
+
+#dishesTableBody tr.dragging {
+    opacity: 0.5;
+    background: var(--color-bg-accent);
+}
+
+#dishesTableBody tr.drag-over {
+    border-top: 2px solid var(--color-primary);
+}
+
+/* Dish Thumbnail */
+.dish-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.dish-thumb--placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-xl);
+}
+
+/* Slug Code */
+.slug-code {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    font-size: var(--text-xs);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+}
+
+/* Dish Types Widget */
+.dish-types {
+    display: flex;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.dish-type {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-3);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+}
+
+.dish-type:hover {
+    background: var(--color-bg-secondary);
+    transform: translateY(-2px);
+}
+
+.dish-type__icon {
+    font-size: 24px;
+    margin-bottom: var(--space-2);
+}
+
+.dish-type__label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+}
+
+.dish-type__value {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+/* Price Stats */
+.price-stats {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+}
+
+.price-stat {
+    text-align: center;
+    flex: 1;
+}
+
+.price-stat__label {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+}
+
+.price-stat__value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.price-stat--highlight .price-stat__value {
+    font-size: var(--text-lg);
+    color: var(--color-primary);
+}
+
+/* Calories Stat */
+.calories-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3);
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+.calories-stat__label {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.calories-stat__value {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .filter-bar__left {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .filter-bar__search {
+        width: 100%;
+    }
+
+    .filter-bar__select {
+        width: 100%;
+    }
+
+    .filter-bar__right {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

@@ -1,0 +1,25 @@
+/* ===========================================
+   Scrollbar Styles
+   =========================================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--mustard-dark);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--bg);
+}

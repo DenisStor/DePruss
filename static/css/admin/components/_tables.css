@@ -1,0 +1,207 @@
+/* ========================================
+   TABLES
+   ======================================== */
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg-elevated);
+}
+
+.table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: var(--color-bg-hover);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table td strong {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+/* Table Column Widths */
+.table__th--checkbox,
+.table__td--checkbox {
+    width: 48px;
+    text-align: center;
+}
+
+.table__th--drag,
+.table__td--drag {
+    width: 40px;
+}
+
+.table__th--w-80 { width: 80px; }
+.table__th--w-100 { width: 100px; }
+.table__th--w-110 { width: 110px; }
+.table__th--w-130 { width: 130px; }
+.table__th--w-150 { width: 150px; }
+.table__th--w-200 { width: 200px; }
+
+/* Table Column Alignment */
+.table__th--center,
+.table__td--center {
+    text-align: center;
+}
+
+.table__th--right,
+.table__td--right {
+    text-align: right;
+}
+
+.table__actions {
+    text-align: center;
+}
+
+.table__actions .action-buttons {
+    display: inline-flex;
+    gap: var(--space-2);
+    justify-content: center;
+}
+
+/* Table Variants */
+.table--hoverable tbody tr:hover {
+    background: var(--color-bg-secondary);
+}
+
+.table--sortable tbody tr {
+    cursor: grab;
+}
+
+.table--sortable tbody tr:active {
+    cursor: grabbing;
+}
+
+/* Sortable Headers */
+.table__th--sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.table__th--sortable:hover {
+    background: var(--color-bg-secondary);
+}
+
+.sort-icon {
+    display: inline-block;
+    margin-left: var(--space-1);
+    opacity: 0.5;
+    vertical-align: middle;
+}
+
+.table__th--active .sort-icon {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+/* Drag Handle */
+.table__drag-handle {
+    width: 24px;
+    height: 24px;
+    color: var(--color-text-muted);
+    cursor: grab;
+    opacity: 0.5;
+    transition: all var(--transition);
+    flex-shrink: 0;
+}
+
+.table__drag-handle:hover {
+    opacity: 1;
+    color: var(--color-primary);
+}
+
+/* Drag States */
+.table tbody tr.dragging {
+    opacity: 0.5;
+    background: rgba(212, 160, 23, 0.1);
+}
+
+.table tbody tr.drag-over {
+    border-top: 2px solid var(--color-primary);
+}
+
+.table tbody tr.drag-over-bottom {
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.table tbody tr.hidden {
+    display: none;
+}
+
+/* Table Row Selection */
+.table tbody tr[data-id] {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:focus {
+    outline: none;
+}
+
+/* Dish Info Cell */
+.dish-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+/* Category Header Row */
+.category-header-row {
+    background: var(--color-bg-secondary) !important;
+}
+
+.category-header-row:hover {
+    background: var(--color-bg-secondary) !important;
+}
+
+.category-header-cell {
+    padding: var(--space-3) var(--space-4) !important;
+    border-bottom: 2px solid var(--color-primary) !important;
+}
+
+.category-header-cell strong {
+    font-size: 0.9375rem;
+    color: var(--color-text);
+}
+
+.category-header-count {
+    margin-left: var(--space-3);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: var(--space-2) var(--space-3);
+    }
+    .table__actions {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+    .table__actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

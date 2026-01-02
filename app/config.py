@@ -1,12 +1,29 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
 import os
+import secrets
+import warnings
 
 
 class Settings(BaseSettings):
     app_name: str = "Кухня Де Прусс"
     debug: bool = False
-    secret_key: str = "change-me-in-production"
+    secret_key: str = ""  # Should be set via environment variable
+
+    @field_validator('secret_key', mode='before')
+    @classmethod
+    def validate_secret_key(cls, v):
+        if not v or v in ('change-me-in-production', 'your-secret-key'):
+            # Generate random key for development but warn
+            warnings.warn(
+                "SECRET_KEY not set! Using random key. Set SECRET_KEY environment variable in production.",
+                UserWarning
+            )
+            return secrets.token_urlsafe(32)
+        if len(v) < 32:
+            warnings.warn("SECRET_KEY should be at least 32 characters for security", UserWarning)
+        return v
     database_url: str = "sqlite+aiosqlite:///./data/cafe.db"
 
     # JWT

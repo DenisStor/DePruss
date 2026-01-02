@@ -1,0 +1,28 @@
+/* ===========================================
+   Empty State
+   =========================================== */
+
+.empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.empty-state__icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.3;
+}
+
+.empty-state__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+}
+
+.empty-state__text {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}

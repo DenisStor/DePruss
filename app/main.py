@@ -10,7 +10,7 @@ from datetime import datetime
 from app.config import get_settings
 from app.database import init_db, async_session
 from app.api.menu import router as menu_router
-from app.api.admin.router import router as admin_router
+from app.api.admin import router as admin_router
 from app.models.dish import Dish
 from sqlalchemy import select
 

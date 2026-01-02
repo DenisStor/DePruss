@@ -8,15 +8,13 @@ class Dish(Base):
     __tablename__ = "dishes"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    category_id = Column(Integer, ForeignKey("categories.id", ondelete="RESTRICT"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id", ondelete="RESTRICT"), nullable=False, index=True)
     name = Column(String(200), nullable=False)
     slug = Column(String(200), unique=True, nullable=False, index=True)
     description = Column(Text, nullable=True)
     price = Column(Numeric(10, 2), nullable=False)
     weight = Column(String(50), nullable=True)
     calories = Column(Integer, nullable=True)
-    is_vegetarian = Column(Boolean, default=False)
-    is_spicy = Column(Boolean, default=False)
     is_available = Column(Boolean, default=True, index=True)
     sort_order = Column(Integer, default=0)
 
@@ -26,7 +24,7 @@ class Dish(Base):
     image_medium = Column(String(500), nullable=True)
     image_large = Column(String(500), nullable=True)
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     category = relationship("Category", back_populates="dishes")

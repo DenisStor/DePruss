@@ -98,12 +98,6 @@
                     {% if not dish.is_available %}
                     <span class="badge badge--unavailable">Нет в наличии</span>
                     {% endif %}
-                    {% if dish.is_vegetarian %}
-                    <span class="badge badge--veg" title="Вегетарианское">Веган</span>
-                    {% endif %}
-                    {% if dish.is_spicy %}
-                    <span class="badge badge--spicy" title="Острое">Острое</span>
-                    {% endif %}
                 </div>
 
                 {% if not dish.is_available %}

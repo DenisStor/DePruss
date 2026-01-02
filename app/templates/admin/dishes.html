@@ -2,40 +2,115 @@
 
 {% block title %}Блюда{% endblock %}
 
+{% block breadcrumbs %}
+<a href="/admin" class="admin-breadcrumbs__item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    </svg>
+</a>
+<span class="admin-breadcrumbs__separator">/</span>
+<span class="admin-breadcrumbs__current">Блюда</span>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div class="page-header__top">
         <div>
             <h1 class="page-title">Блюда</h1>
-            <p class="page-subtitle">Управление блюдами меню</p>
+            <p class="page-subtitle">Всего блюд: <span id="totalCount">{{ dishes|length }}</span></p>
         </div>
-        <a href="/admin/dishes/new" class="btn btn--primary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Добавить блюдо
-        </a>
+        <div class="page-header__actions">
+            <a href="/admin/dishes/new" class="btn btn--primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Добавить блюдо
+            </a>
+        </div>
     </div>
 </div>
 
 <div class="card">
-    {% if dishes %}
-    <div class="table-wrapper">
-        <table class="table">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-bar__left">
+            <div class="filter-bar__search">
+                <svg class="filter-bar__search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" class="filter-bar__input" placeholder="Поиск по названию...">
+            </div>
+            <select id="categoryFilter" class="filter-bar__select">
+                <option value="">Все категории</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <select id="statusFilter" class="filter-bar__select">
+                <option value="">Все статусы</option>
+                <option value="true">В наличии</option>
+                <option value="false">Нет в наличии</option>
+            </select>
+        </div>
+        <div class="filter-bar__right">
+        </div>
+    </div>
+
+    <!-- Active Filters Chips -->
+    <div class="filter-chips u-hidden" id="filterChips">
+        <span class="filter-chips__label">Фильтры:</span>
+        <div class="filter-chips__list" id="filterChipsList"></div>
+        <button type="button" class="filter-chips__clear" onclick="clearAllFilters()">Сбросить все</button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-overlay u-hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <span>Загрузка...</span>
+    </div>
+
+    <!-- Table View -->
+    <div class="table-wrapper" id="tableView">
+        <table class="table table--sortable table--hoverable" id="dishesTable">
             <thead>
                 <tr>
-                    <th>Фото</th>
+                    <th class="table__th--w-80 table__th--center">№</th>
+                    <th class="table__th--w-80">Фото</th>
                     <th>Название</th>
-                    <th>Категория</th>
-                    <th>Цена</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
+                    <th class="table__th--w-150">Категория</th>
+                    <th class="table__th--w-100 table__th--right">Цена</th>
+                    <th class="table__th--w-100 table__th--center">Статус</th>
+                    <th class="table__th--w-130 table__th--center">Действия</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for dish in dishes %}
-                <tr>
+            <tbody id="dishesTableBody">
+                {% for category_id, category_dishes in dishes|groupby('category_id') %}
+                {% set cat = category_dishes[0].category %}
+                <tr class="category-header-row" data-category="{{ category_id }}">
+                    <td colspan="7" class="category-header-cell">
+                        <strong>{{ cat.name }}</strong>
+                        <span class="category-header-count">{{ category_dishes|length }} блюд</span>
+                    </td>
+                </tr>
+                {% for dish in category_dishes %}
+                <tr data-id="{{ dish.id }}" data-category="{{ dish.category_id }}" data-available="{{ 'true' if dish.is_available else 'false' }}">
+                    <td class="table__td--center">
+                        <div class="reorder-controls">
+                            <button type="button" class="reorder-btn reorder-btn--up" onclick="moveRow(this, 'up')" title="Вверх">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                            </button>
+                            <span class="reorder-position">{{ loop.index }}</span>
+                            <button type="button" class="reorder-btn reorder-btn--down" onclick="moveRow(this, 'down')" title="Вниз">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
                     <td>
                         {% if dish.image_thumbnail %}
                         <img src="{{ dish.image_thumbnail }}" alt="{{ dish.name }}" class="dish-thumb">
@@ -44,52 +119,45 @@
                         {% endif %}
                     </td>
                     <td>
-                        <strong>{{ dish.name }}</strong>
-                        {% if dish.is_vegetarian or dish.is_spicy %}
-                        <div class="dish-badges">
-                            {% if dish.is_vegetarian %}
-                            <span class="dish-badge dish-badge--success">Веган</span>
-                            {% endif %}
-                            {% if dish.is_spicy %}
-                            <span class="dish-badge dish-badge--danger">Острое</span>
-                            {% endif %}
-                        </div>
-                        {% endif %}
+                        <strong class="dish-name">{{ dish.name }}</strong>
                     </td>
-                    <td>{{ dish.category.name }}</td>
-                    <td><strong>{{ dish.price|int }} ₽</strong></td>
                     <td>
-                        {% if dish.is_available %}
-                        <span class="status-badge status-badge--active">В наличии</span>
-                        {% else %}
-                        <span class="status-badge status-badge--inactive">Нет в наличии</span>
-                        {% endif %}
+                        <span class="category-tag">{{ dish.category.name }}</span>
                     </td>
-                    <td class="table__actions">
-                        <a href="/admin/dishes/{{ dish.id }}/edit" class="btn btn--secondary btn--small">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                            Изменить
-                        </a>
-                        <form method="POST" action="/admin/dishes/{{ dish.id }}/delete" class="inline-form" onsubmit="return confirm('Удалить блюдо «{{ dish.name }}»?')">
-                            <button type="submit" class="btn btn--danger btn--small">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <td class="table__td--right">
+                        <strong class="dish-price">{{ dish.price|int }} ₽</strong>
+                    </td>
+                    <td class="table__td--center">
+                        <label class="toggle-switch">
+                            <input type="checkbox" {% if dish.is_available %}checked{% endif %} onchange="toggleAvailability({{ dish.id }}, this.checked)">
+                            <span class="toggle-switch__slider"></span>
+                        </label>
+                    </td>
+                    <td class="table__td--center table__actions">
+                        <div class="action-buttons">
+                            <a href="/admin/dishes/{{ dish.id }}/edit" class="btn btn--icon" title="Редактировать">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </a>
+                            <button type="button" class="btn btn--icon btn--icon-danger" onclick="deleteDish({{ dish.id }}, '{{ dish.name|e }}')" title="Удалить">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <polyline points="3 6 5 6 21 6"></polyline>
                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                 </svg>
-                                Удалить
                             </button>
-                        </form>
+                        </div>
                     </td>
                 </tr>
+                {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {% else %}
-    <div class="empty-state">
+    <!-- Empty State -->
+    {% if not dishes %}
+    <div class="empty-state" id="emptyState">
         <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
@@ -107,5 +175,379 @@
         </a>
     </div>
     {% endif %}
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+        <div class="pagination__info">
+            Показано <span id="showingFrom">1</span>-<span id="showingTo">{{ dishes|length }}</span> из <span id="showingTotal">{{ dishes|length }}</span>
+        </div>
+        <div class="pagination__controls">
+            <select id="perPageSelect" class="pagination__per-page">
+                <option value="10">10 на странице</option>
+                <option value="20" selected>20 на странице</option>
+                <option value="50">50 на странице</option>
+                <option value="100">100 на странице</option>
+            </select>
+            <div class="pagination__pages" id="paginationPages">
+                <!-- Generated dynamically -->
+            </div>
+        </div>
+    </div>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// DOM Elements
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const statusFilter = document.getElementById('statusFilter');
+const filterChips = document.getElementById('filterChips');
+const filterChipsList = document.getElementById('filterChipsList');
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Restore filters from URL
+    restoreFiltersFromURL();
+
+    // Setup event listeners
+    searchInput?.addEventListener('input', debounce(applyFilters, 300));
+    categoryFilter?.addEventListener('change', applyFilters);
+    statusFilter?.addEventListener('change', applyFilters);
+
+    // Update reorder button states
+    updateReorderButtons();
+
+    // Init drag and drop
+    initDragAndDrop();
+});
+
+// Reorder functions - within category only
+let draggedRow = null;
+let draggedCategory = null;
+
+function initDragAndDrop() {
+    const rows = document.querySelectorAll('#dishesTableBody tr[data-id]');
+
+    rows.forEach(row => {
+        row.draggable = true;
+
+        row.addEventListener('dragstart', (e) => {
+            draggedRow = row;
+            draggedCategory = row.dataset.category;
+            row.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        row.addEventListener('dragend', () => {
+            row.classList.remove('dragging');
+            document.querySelectorAll('.drag-over').forEach(r => r.classList.remove('drag-over'));
+            draggedRow = null;
+            draggedCategory = null;
+        });
+
+        row.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (!draggedRow || row === draggedRow) return;
+            // Only allow drop within same category
+            if (row.dataset.category !== draggedCategory) return;
+
+            e.dataTransfer.dropEffect = 'move';
+            row.classList.add('drag-over');
+        });
+
+        row.addEventListener('dragleave', () => {
+            row.classList.remove('drag-over');
+        });
+
+        row.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            row.classList.remove('drag-over');
+
+            if (!draggedRow || row === draggedRow) return;
+            // Only allow drop within same category
+            if (row.dataset.category !== draggedCategory) return;
+
+            const tbody = row.parentElement;
+            const allRows = Array.from(tbody.children);
+            const draggedIndex = allRows.indexOf(draggedRow);
+            const targetIndex = allRows.indexOf(row);
+
+            if (draggedIndex < targetIndex) {
+                tbody.insertBefore(draggedRow, row.nextSibling);
+            } else {
+                tbody.insertBefore(draggedRow, row);
+            }
+
+            updatePositionNumbers();
+            updateReorderButtons();
+            await saveOrder();
+        });
+    });
+}
+
+async function moveRow(btn, direction) {
+    const row = btn.closest('tr');
+    const categoryId = row.dataset.category;
+    const tbody = row.parentElement;
+
+    const categoryRows = Array.from(tbody.querySelectorAll(`tr[data-category="${categoryId}"][data-id]`));
+    const index = categoryRows.indexOf(row);
+
+    let targetRow;
+    if (direction === 'up' && index > 0) {
+        targetRow = categoryRows[index - 1];
+        tbody.insertBefore(row, targetRow);
+    } else if (direction === 'down' && index < categoryRows.length - 1) {
+        targetRow = categoryRows[index + 1];
+        tbody.insertBefore(targetRow, row);
+    } else {
+        return;
+    }
+
+    updatePositionNumbers();
+    updateReorderButtons();
+    await saveOrder();
+}
+
+function updatePositionNumbers() {
+    const categories = [...new Set(
+        Array.from(document.querySelectorAll('#dishesTableBody tr[data-id]'))
+            .map(row => row.dataset.category)
+    )];
+
+    categories.forEach(categoryId => {
+        const rows = document.querySelectorAll(`#dishesTableBody tr[data-category="${categoryId}"][data-id]`);
+        rows.forEach((row, index) => {
+            const posEl = row.querySelector('.reorder-position');
+            if (posEl) posEl.textContent = index + 1;
+        });
+    });
+}
+
+function updateReorderButtons() {
+    const categories = [...new Set(
+        Array.from(document.querySelectorAll('#dishesTableBody tr[data-id]'))
+            .map(row => row.dataset.category)
+    )];
+
+    categories.forEach(categoryId => {
+        const rows = document.querySelectorAll(`#dishesTableBody tr[data-category="${categoryId}"][data-id]`);
+        rows.forEach((row, index) => {
+            const upBtn = row.querySelector('.reorder-btn--up');
+            const downBtn = row.querySelector('.reorder-btn--down');
+            if (upBtn) upBtn.disabled = index === 0;
+            if (downBtn) downBtn.disabled = index === rows.length - 1;
+        });
+    });
+}
+
+async function saveOrder() {
+    const rows = document.querySelectorAll('#dishesTableBody tr[data-id]');
+    const items = Array.from(rows).map((row, index) => ({
+        id: parseInt(row.dataset.id),
+        sort_order: index
+    }));
+
+    try {
+        const response = await fetch('/admin/api/dishes/reorder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items })
+        });
+
+        if (!response.ok) throw new Error('Failed to save order');
+        toast.success('Порядок сохранён');
+    } catch (error) {
+        toast.error('Ошибка', 'Не удалось сохранить порядок');
+        console.error(error);
+    }
+}
+
+// Debounce helper
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Filtering
+function applyFilters() {
+    const searchTerm = searchInput?.value.toLowerCase() || '';
+    const categoryId = categoryFilter?.value || '';
+    const status = statusFilter?.value || '';
+
+    // Update URL
+    updateURLParams({ search: searchTerm, category: categoryId, status: status });
+
+    // Update filter chips
+    updateFilterChips();
+
+    // Filter table rows
+    const tableRows = document.querySelectorAll('#dishesTableBody tr');
+    let visibleCount = 0;
+
+    tableRows.forEach(row => {
+        const name = row.querySelector('.dish-name')?.textContent.toLowerCase() || '';
+        const rowCategory = row.dataset.category;
+        const isAvailable = row.dataset.available;
+
+        let show = true;
+
+        if (searchTerm && !name.includes(searchTerm)) show = false;
+        if (categoryId && rowCategory !== categoryId) show = false;
+        if (status && isAvailable !== status) show = false;
+
+        row.classList.toggle('u-hidden', !show);
+        if (show) visibleCount++;
+
+        // Highlight search term
+        const nameEl = row.querySelector('.dish-name');
+        if (nameEl) {
+            if (searchTerm && show) {
+                const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, 'gi');
+                nameEl.innerHTML = nameEl.textContent.replace(regex, '<mark class="highlight">$1</mark>');
+            } else {
+                nameEl.innerHTML = nameEl.textContent;
+            }
+        }
+    });
+
+    // Update count
+    document.getElementById('showingTotal').textContent = visibleCount;
+}
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// URL params
+function updateURLParams(params) {
+    const url = new URL(window.location.href);
+    Object.entries(params).forEach(([key, value]) => {
+        if (value) {
+            url.searchParams.set(key, value);
+        } else {
+            url.searchParams.delete(key);
+        }
+    });
+    window.history.replaceState({}, '', url);
+}
+
+function restoreFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get('search') && searchInput) {
+        searchInput.value = params.get('search');
+    }
+    if (params.get('category') && categoryFilter) {
+        categoryFilter.value = params.get('category');
+    }
+    if (params.get('status') && statusFilter) {
+        statusFilter.value = params.get('status');
+    }
+
+    applyFilters();
+}
+
+// Filter chips
+function updateFilterChips() {
+    const chips = [];
+
+    if (searchInput?.value) {
+        chips.push({ type: 'search', label: `Поиск: ${searchInput.value}`, clear: () => { searchInput.value = ''; applyFilters(); } });
+    }
+    if (categoryFilter?.value) {
+        const option = categoryFilter.options[categoryFilter.selectedIndex];
+        chips.push({ type: 'category', label: option.text, clear: () => { categoryFilter.value = ''; applyFilters(); } });
+    }
+    if (statusFilter?.value) {
+        const option = statusFilter.options[statusFilter.selectedIndex];
+        chips.push({ type: 'status', label: option.text, clear: () => { statusFilter.value = ''; applyFilters(); } });
+    }
+
+    filterChips.classList.toggle('u-hidden', chips.length === 0);
+    filterChipsList.innerHTML = chips.map((chip, i) => `
+        <span class="filter-chip">
+            ${chip.label}
+            <button type="button" onclick="clearFilter(${i})" class="filter-chip__remove">×</button>
+        </span>
+    `).join('');
+
+    window._filterChips = chips;
+}
+
+function clearFilter(index) {
+    window._filterChips[index]?.clear();
+}
+
+function clearAllFilters() {
+    if (searchInput) searchInput.value = '';
+    if (categoryFilter) categoryFilter.value = '';
+    if (statusFilter) statusFilter.value = '';
+    applyFilters();
+}
+
+// Toggle availability
+async function toggleAvailability(id, isAvailable) {
+    try {
+        const response = await fetch(`/admin/api/dishes/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_available: isAvailable })
+        });
+
+        if (response.ok) {
+            // Update table row
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (row) {
+                row.dataset.available = isAvailable.toString();
+            }
+            toast.success('Статус обновлен');
+        } else {
+            const data = await response.json();
+            toast.error('Ошибка', data.detail || 'Не удалось обновить статус');
+        }
+    } catch (error) {
+        toast.error('Ошибка', 'Произошла ошибка');
+    }
+}
+
+// Delete dish
+async function deleteDish(id, name) {
+    const confirmed = await modal.confirm({
+        title: 'Удаление блюда',
+        message: `Вы уверены, что хотите удалить блюдо «${name}»?`,
+        confirmText: 'Удалить',
+        cancelText: 'Отмена',
+        type: 'danger'
+    });
+
+    if (confirmed) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/dishes/${id}/delete`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Preview dish
+function previewDish(id, name, image, price, category) {
+    modal.preview({
+        id: id,
+        name: name,
+        image: image,
+        price: price,
+        category: category
+    });
+}
+</script>
 {% endblock %}

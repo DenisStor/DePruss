@@ -1,0 +1,26 @@
+/* ========================================
+   CATEGORIES PAGE
+   ======================================== */
+.category-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+/* Drag and Drop for Categories */
+#categoriesTableBody tr[data-id] {
+    cursor: grab;
+}
+
+#categoriesTableBody tr[data-id]:active {
+    cursor: grabbing;
+}
+
+#categoriesTableBody tr.dragging {
+    opacity: 0.5;
+    background: var(--color-bg-accent);
+}
+
+#categoriesTableBody tr.drag-over {
+    border-top: 2px solid var(--color-primary);
+}

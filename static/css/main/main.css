@@ -1,0 +1,30 @@
+/* ===========================================
+   Main CSS - Entry Point
+   Extended styles, animations, and enhancements
+   =========================================== */
+
+/* Animations */
+@import 'animations/_keyframes.css';
+@import 'animations/_scroll-reveal.css';
+@import 'animations/_micro.css';
+
+/* Components */
+@import 'components/_unavailable-dish.css';
+@import 'components/_hover-effects.css';
+@import 'components/_category-filter.css';
+
+/* Pages */
+@import 'pages/_hero.css';
+@import 'pages/_hero-decor.css';
+@import 'pages/_dish-view.css';
+@import 'pages/_dish-view-tags.css';
+@import 'pages/_dish-view-info.css';
+
+/* Utilities */
+@import 'utils/_empty-state.css';
+@import 'utils/_helpers.css';
+@import 'utils/_scrollbar.css';
+@import 'utils/_responsive.css';
+
+/* Print */
+@import '_print.css';

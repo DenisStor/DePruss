@@ -1,0 +1,59 @@
+/* ========================================
+   Admin Panel Styles - Кухня Де Прусс
+   Modular CSS Architecture
+   ======================================== */
+
+/* ===========================================
+   BASE
+   =========================================== */
+@import url('./base/_variables.css');
+@import url('./base/_reset.css');
+@import url('./base/_scrollbar.css');
+
+/* ===========================================
+   LAYOUTS
+   =========================================== */
+@import url('./layouts/_sidebar.css');
+@import url('./layouts/_header.css');
+@import url('./layouts/_main.css');
+@import url('./layouts/_overlay.css');
+
+/* ===========================================
+   COMPONENTS
+   =========================================== */
+@import url('./components/_buttons.css');
+@import url('./components/_icon-buttons.css');
+@import url('./components/_cards.css');
+@import url('./components/_forms.css');
+@import url('./components/_form-validation.css');
+@import url('./components/_tables.css');
+@import url('./components/_modals.css');
+@import url('./components/_toasts.css');
+@import url('./components/_badges.css');
+@import url('./components/_toggle.css');
+@import url('./components/_dropdown.css');
+@import url('./components/_filter-chips.css');
+
+/* ===========================================
+   PAGES
+   =========================================== */
+@import url('./pages/_dashboard.css');
+@import url('./pages/_categories.css');
+@import url('./pages/_dishes.css');
+@import url('./pages/_form-page.css');
+@import url('./pages/_audit.css');
+
+/* ===========================================
+   UTILS
+   =========================================== */
+@import url('./utils/_typography.css');
+@import url('./utils/_stat-cards.css');
+@import url('./utils/_activity-list.css');
+@import url('./utils/_filters.css');
+@import url('./utils/_bulk-actions.css');
+@import url('./utils/_image-upload.css');
+@import url('./utils/_keyboard.css');
+@import url('./utils/_empty-state.css');
+@import url('./utils/_quick-actions.css');
+@import url('./utils/_animations.css');
+@import url('./utils/_global-search.css');

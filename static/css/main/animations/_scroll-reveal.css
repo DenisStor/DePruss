@@ -1,0 +1,19 @@
+/* ===========================================
+   Scroll Reveal Animations
+   =========================================== */
+
+.scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger animations */
+.scroll-reveal[data-delay] {
+    transition-delay: calc(var(--delay, 0) * 1ms);
+}

@@ -1,0 +1,143 @@
+/* ===========================================
+   Footer
+   =========================================== */
+
+.footer {
+    background: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+}
+
+.footer__top {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .footer__top {
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 3rem;
+    }
+}
+
+.footer__brand {
+    max-width: 320px;
+}
+
+.footer__logo {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mustard);
+    margin-bottom: 1rem;
+}
+
+.footer__desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.footer__section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mustard);
+    margin-bottom: 1.25rem;
+}
+
+/* Footer Hours */
+.footer__hours {
+    list-style: none;
+}
+
+.footer__hours li {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.footer__hours li:last-child {
+    border-bottom: none;
+}
+
+.footer__hours li span:last-child {
+    color: var(--text);
+    font-weight: 500;
+}
+
+/* Footer Contact */
+.footer__contact {
+    list-style: none;
+}
+
+.footer__contact li {
+    padding: 0.5rem 0;
+}
+
+.footer__contact a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: var(--transition-fast);
+}
+
+.footer__contact a:hover {
+    color: var(--mustard);
+}
+
+/* Footer Bottom */
+.footer__bottom {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+}
+
+.footer__bottom-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer__copy {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Footer Socials */
+.footer__socials {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.footer__social {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.footer__social:hover {
+    background: var(--mustard);
+    border-color: var(--mustard);
+    color: var(--bg);
+}

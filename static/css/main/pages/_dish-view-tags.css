@@ -1,0 +1,59 @@
+/* ===========================================
+   Dish View Page - Tags & Scroll Indicator
+   =========================================== */
+
+/* Tags */
+.dish-view__tags {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.dish-view__tag {
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dish-view__tag--green {
+    background: var(--success);
+    color: white;
+}
+
+.dish-view__tag--red {
+    background: var(--danger);
+    color: white;
+}
+
+.dish-view__tag--gray {
+    background: rgba(100, 100, 100, 0.9);
+    color: white;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Scroll Indicator */
+.dish-view__scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    animation: pulse-down 2s ease-in-out infinite;
+}
+
+@media (min-width: 900px) {
+    .dish-view__scroll-indicator {
+        display: none;
+    }
+}

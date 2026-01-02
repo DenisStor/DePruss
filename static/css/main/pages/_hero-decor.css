@@ -1,0 +1,88 @@
+/* ===========================================
+   Hero Section - Decorative Elements
+   =========================================== */
+
+/* Decorative container */
+.hero__decor {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Decorative lines */
+.hero__decor-line {
+    position: absolute;
+    top: 50%;
+    width: 150px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--mustard), transparent);
+    opacity: 0.3;
+}
+
+.hero__decor-line--left {
+    left: 0;
+    transform: translateY(-50%);
+}
+
+.hero__decor-line--right {
+    right: 0;
+    transform: translateY(-50%);
+}
+
+/* Decorative circles */
+.hero__decor-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--mustard);
+    opacity: 0.1;
+}
+
+.hero__decor-circle--1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -100px;
+}
+
+.hero__decor-circle--2 {
+    width: 200px;
+    height: 200px;
+    bottom: -50px;
+    left: -50px;
+}
+
+/* Scroll indicator */
+.hero__scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    animation: fadeIn 0.6s ease 0.6s both;
+}
+
+.hero__scroll-line {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--mustard), transparent);
+    margin-bottom: 0.5rem;
+}
+
+.hero__scroll svg {
+    animation: bounce 2s ease-in-out infinite;
+}
+
+/* Hide decor on mobile */
+@media (max-width: 768px) {
+    .hero__decor-line {
+        display: none;
+    }
+}

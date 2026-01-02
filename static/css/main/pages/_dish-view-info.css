@@ -1,0 +1,118 @@
+/* ===========================================
+   Dish View Page - Info Section
+   =========================================== */
+
+/* Info Section */
+.dish-view__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.dish-view__info-inner {
+    position: sticky;
+    top: 100px;
+}
+
+@media (min-width: 900px) {
+    .dish-view__info-inner {
+        padding: 1rem 0;
+    }
+}
+
+/* Category Badge */
+.dish-view__category {
+    display: inline-block;
+    color: var(--mustard);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--mustard-subtle);
+    border-radius: 50px;
+}
+
+/* Title */
+.dish-view__title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+}
+
+/* Price */
+.dish-view__price {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--mustard);
+    margin-bottom: 1.5rem;
+}
+
+/* Description */
+.dish-view__desc {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+/* Ingredients List */
+.dish-view__ingredients {
+    margin-bottom: 1.5rem;
+}
+
+.dish-view__ingredients-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--mustard);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.dish-view__ingredients-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dish-view__ingredients-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+}
+
+.dish-view__ingredients-list li:last-child {
+    border-bottom: none;
+}
+
+.ingredient-name {
+    color: var(--text);
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+.ingredient-weight {
+    color: var(--mustard);
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--mustard-subtle);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+}
+
+/* Meta as simple text */
+.dish-view__meta-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}

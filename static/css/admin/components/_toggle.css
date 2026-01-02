@@ -1,0 +1,174 @@
+/* ========================================
+   TOGGLE SWITCH
+   ======================================== */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch__slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--color-bg-tertiary);
+    border-radius: 24px;
+    transition: 0.2s;
+}
+
+.toggle-switch__slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.toggle-switch input:checked + .toggle-switch__slider {
+    background: var(--color-success);
+}
+
+.toggle-switch input:checked + .toggle-switch__slider::before {
+    transform: translateX(20px);
+}
+
+.toggle-switch input:focus + .toggle-switch__slider {
+    box-shadow: 0 0 0 2px var(--color-bg-accent);
+}
+
+/* Form Toggle (with label) */
+.form-toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.form-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    cursor: pointer;
+}
+
+.form-toggle input {
+    opacity: 0;
+    position: absolute;
+}
+
+.form-toggle__slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--color-bg-tertiary);
+    border-radius: 24px;
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.form-toggle__slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    top: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.2s;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-toggle input:checked + .form-toggle__slider {
+    background: var(--color-success);
+}
+
+.form-toggle input:checked + .form-toggle__slider::before {
+    transform: translateX(20px);
+}
+
+.form-toggle__label {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.form-toggle__label strong {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.form-toggle__label small {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+}
+
+/* Checkbox Cards */
+.form-checkbox-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.form-checkbox-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+}
+
+.form-checkbox-card:hover {
+    border-color: var(--color-bg-accent);
+}
+
+.form-checkbox-card input {
+    position: absolute;
+    opacity: 0;
+}
+
+.form-checkbox-card input:checked + .form-checkbox-card__icon + .form-checkbox-card__text {
+    color: var(--color-primary);
+}
+
+.form-checkbox-card:has(input:checked) {
+    background: var(--color-bg-accent);
+    border-color: var(--color-primary);
+}
+
+.form-checkbox-card__icon {
+    font-size: 24px;
+}
+
+.form-checkbox-card__text {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+    .form-checkbox-cards {
+        grid-template-columns: 1fr;
+    }
+}

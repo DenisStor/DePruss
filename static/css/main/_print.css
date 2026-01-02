@@ -1,0 +1,25 @@
+/* ===========================================
+   Print Styles
+   =========================================== */
+
+@media print {
+    .header, .footer, .scroll-top,
+    .dish-view__back-link,
+    .dish-view__scroll-indicator {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .dish-view__title,
+    .dish-view__price {
+        color: black;
+    }
+
+    .dish-view__image-box {
+        border: 1px solid #ccc;
+    }
+}

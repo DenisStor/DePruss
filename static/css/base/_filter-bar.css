@@ -1,0 +1,113 @@
+/* ===========================================
+   Category Filter Bar (Critical Styles)
+   =========================================== */
+
+.category-filter {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .category-filter {
+        position: sticky;
+        top: 0;
+        bottom: auto;
+        border-top: none;
+        border-bottom: 1px solid var(--border);
+        margin: 0 -1.5rem;
+        width: calc(100% + 3rem);
+    }
+}
+
+.category-filter__container {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.category-filter__scroll {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 0.75rem 1rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 768px) {
+    .category-filter__scroll {
+        padding: 1rem 1.5rem;
+    }
+}
+
+.category-filter__scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.category-filter__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.category-filter__icon {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.category-filter__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--bg-elevated);
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Fade Gradients */
+.category-filter__fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 60px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.category-filter__fade--left {
+    left: 0;
+    background: linear-gradient(to right, rgba(10, 10, 10, 1), transparent);
+    opacity: 0;
+}
+
+.category-filter__fade--right {
+    right: 0;
+    background: linear-gradient(to left, rgba(10, 10, 10, 1), transparent);
+    opacity: 1;
+}

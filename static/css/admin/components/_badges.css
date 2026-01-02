@@ -1,0 +1,128 @@
+/* ========================================
+   STATUS & BADGES
+   ======================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+}
+
+.status-badge--active {
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+}
+
+.status-badge--inactive {
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
+}
+
+.status-badge--warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning-text);
+}
+
+/* Dish Badges */
+.dish-badges {
+    display: flex;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+    flex-wrap: wrap;
+}
+
+.dish-badge {
+    font-size: var(--text-xs);
+    padding: 2px var(--space-2);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.dish-badge--success {
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+}
+
+.dish-badge--danger {
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
+}
+
+/* Category Tag */
+.category-tag {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+}
+
+.category-tag--small {
+    font-size: 10px;
+    padding: 2px var(--space-2);
+}
+
+/* User Badge */
+.user-badge {
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-primary);
+    color: var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+/* Dishes Count Badge */
+.dishes-count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 var(--space-2);
+    background: var(--color-bg-accent);
+    color: var(--color-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    border-radius: var(--radius-full);
+}
+
+/* Order Badge */
+.order-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+}
+
+/* Status Dots */
+.status-dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-text-muted);
+}
+
+.status-dot--success {
+    background: var(--color-success);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+.status-dot--warning {
+    background: var(--color-warning);
+}
+
+.status-dot--danger {
+    background: var(--color-danger);
+}

@@ -1,0 +1,33 @@
+/* ========================================
+   FORM VALIDATION STYLES
+   ======================================== */
+.form-input--error {
+    border-color: var(--color-danger) !important;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.form-input--error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.form-error {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--color-danger);
+    font-size: 12px;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.form-input--success {
+    border-color: var(--color-success) !important;
+}
+
+.form-input--success:focus {
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+}

@@ -1,0 +1,218 @@
+/* ========================================
+   IMAGE UPLOAD
+   ======================================== */
+
+/* File Upload */
+.file-upload {
+    display: block;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-8);
+    text-align: center;
+    cursor: pointer;
+    background: var(--color-bg-elevated);
+    transition: all var(--transition);
+}
+
+.file-upload:hover {
+    border-color: var(--color-primary);
+    background: rgba(212, 160, 23, 0.05);
+}
+
+.file-upload__icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-4);
+    color: var(--color-text-muted);
+    display: block;
+}
+
+.file-upload__text {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.file-upload__hint {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+}
+
+.file-upload input {
+    display: none;
+}
+
+.file-upload--spaced {
+    margin-top: var(--space-4);
+}
+
+/* Image Preview */
+.image-preview {
+    margin-bottom: var(--space-4);
+    position: relative;
+    display: block;
+    width: fit-content;
+}
+
+.image-preview img {
+    display: block;
+    max-width: 200px;
+    height: auto;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-border);
+}
+
+.image-preview__remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-danger);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition);
+}
+
+.image-preview__remove:hover {
+    transform: scale(1.1);
+}
+
+/* Image Upload Area */
+.image-upload-area {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: all 0.15s;
+    overflow: hidden;
+}
+
+.image-upload-area--highlight {
+    border-color: var(--color-primary);
+    background: var(--color-bg-accent);
+}
+
+.image-upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-8);
+    text-align: center;
+}
+
+.image-upload-placeholder svg {
+    color: var(--color-text-tertiary);
+}
+
+.image-upload-placeholder p {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+.image-upload-placeholder span {
+    color: var(--color-text-tertiary);
+    font-size: var(--text-sm);
+}
+
+.image-upload-preview {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--color-bg-secondary);
+}
+
+.image-upload-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-upload-preview__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.image-upload-preview:hover .image-upload-preview__overlay {
+    opacity: 1;
+}
+
+/* Import Dropzone */
+.import-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-8);
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    transition: all 0.15s;
+}
+
+.import-dropzone svg {
+    color: var(--color-text-tertiary);
+}
+
+.import-dropzone p {
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.import-dropzone__link {
+    color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.import-dropzone__hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+}
+
+.import-dropzone--highlight {
+    border-color: var(--color-primary);
+    background: var(--color-bg-accent);
+}
+
+/* Import Preview */
+.import-preview {
+    padding: var(--space-4);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.import-preview__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-3);
+}
+
+.import-preview__filename {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.import-preview__stats {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.import-preview__stat {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}

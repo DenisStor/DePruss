@@ -84,3 +84,39 @@ class ImageProcessor:
             for file in dish_dir.iterdir():
                 file.unlink()
             dish_dir.rmdir()
+
+    @staticmethod
+    def copy_images(source_dish_id: int, target_dish_id: int) -> dict[str, str] | None:
+        """Копирует изображения из одного блюда в другое"""
+        import shutil
+
+        source_dir = Path(settings.upload_dir) / str(source_dish_id)
+        if not source_dir.exists():
+            return None
+
+        target_dir = Path(settings.upload_dir) / str(target_dish_id)
+        target_dir.mkdir(parents=True, exist_ok=True)
+
+        # Новый timestamp для cache-busting
+        version = int(time.time())
+
+        paths = {}
+
+        for size_name in ImageProcessor.SIZES.keys():
+            # Находим исходный файл (может быть с разными версиями)
+            source_files = list(source_dir.glob(f"{size_name}_*.webp"))
+            if not source_files:
+                continue
+
+            source_file = source_files[0]  # Берем первый найденный
+
+            # Новый путь с новой версией
+            target_file = target_dir / f"{size_name}_{version}.webp"
+            relative_path = f"/{settings.upload_dir}/{target_dish_id}/{size_name}_{version}.webp"
+
+            # Копируем файл
+            shutil.copy2(source_file, target_file)
+
+            paths[size_name] = relative_path
+
+        return paths if paths else None

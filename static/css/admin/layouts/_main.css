@@ -1,0 +1,42 @@
+/* ========================================
+   MAIN CONTENT AREA
+   ======================================== */
+.admin-main {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-main__container {
+    flex: 1;
+    padding: var(--space-6);
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+    .admin-main {
+        margin-left: 0;
+    }
+    .admin-main__container {
+        padding: var(--space-4);
+    }
+}
+
+@media (max-width: 640px) {
+    .admin-main__container {
+        padding: var(--space-3);
+    }
+}
+
+/* Responsive Updates */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    .admin-main {
+        margin-left: 0;
+    }
+}

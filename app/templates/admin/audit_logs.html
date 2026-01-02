@@ -1,0 +1,494 @@
+{% extends "admin/base.html" %}
+
+{% block title %}История изменений{% endblock %}
+
+{% block breadcrumbs %}
+<a href="/admin" class="admin-breadcrumbs__item">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    </svg>
+</a>
+<span class="admin-breadcrumbs__separator">/</span>
+<span class="admin-breadcrumbs__current">История изменений</span>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header__top">
+        <div>
+            <h1 class="page-title">История изменений</h1>
+            <p class="page-subtitle">Журнал действий в админ-панели</p>
+        </div>
+    </div>
+</div>
+
+<!-- Таблица логов -->
+<div class="card">
+    <!-- Фильтры -->
+    <div class="filter-bar" id="filterBar">
+        <div class="filter-bar__left">
+            <select id="filterEntityType" class="filter-bar__select">
+                <option value="">Все типы</option>
+                <option value="dish">Блюда</option>
+                <option value="category">Категории</option>
+                <option value="admin_user">Администраторы</option>
+            </select>
+            <select id="filterAction" class="filter-bar__select">
+                <option value="">Все действия</option>
+                <option value="create">Создание</option>
+                <option value="update">Изменение</option>
+                <option value="delete">Удаление</option>
+                <option value="login">Вход</option>
+                <option value="logout">Выход</option>
+            </select>
+            <select id="filterAdmin" class="filter-bar__select">
+                <option value="">Все администраторы</option>
+                {% for a in admins %}
+                <option value="{{ a.id }}">{{ a.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-bar__right">
+            <button type="button" class="btn btn--ghost btn--small" id="resetFilters">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Сбросить
+            </button>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table" id="logsTable">
+            <thead>
+                <tr>
+                    <th class="table__th--w-150">Дата/время</th>
+                    <th class="table__th--w-130">Администратор</th>
+                    <th class="table__th--w-110">Действие</th>
+                    <th class="table__th--w-110">Тип</th>
+                    <th>Объект</th>
+                    <th class="table__th--w-80">Детали</th>
+                </tr>
+            </thead>
+            <tbody id="logsBody">
+                <!-- Загружается через JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Пагинация -->
+    <div class="pagination" id="pagination">
+        <!-- Генерируется через JS -->
+    </div>
+
+    <!-- Пустое состояние -->
+    <div class="empty-state u-hidden" id="emptyState">
+        <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <h3 class="empty-state__title">Нет записей</h3>
+        <p class="empty-state__text">История изменений пуста или не соответствует фильтрам</p>
+    </div>
+
+    <!-- Загрузка -->
+    <div class="loading-state u-hidden" id="loadingState">
+        <div class="sort-saving__spinner"></div>
+        <span>Загрузка...</span>
+    </div>
+</div>
+
+<!-- Модальное окно с деталями -->
+<div class="modal-overlay" id="detailsModal">
+    <div class="modal modal--large">
+        <div class="modal__header">
+            <h3 class="modal__title" id="modalTitle">Детали изменения</h3>
+            <button class="modal__close" id="closeModal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="modal__body" id="modalBody">
+            <!-- Контент загружается динамически -->
+        </div>
+        <div class="modal__footer">
+            <button class="btn btn--secondary" id="closeModalBtn">Закрыть</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const logsBody = document.getElementById('logsBody');
+    const pagination = document.getElementById('pagination');
+    const emptyState = document.getElementById('emptyState');
+    const loadingState = document.getElementById('loadingState');
+    const tableWrapper = document.querySelector('.table-wrapper');
+
+    const filterEntityType = document.getElementById('filterEntityType');
+    const filterAction = document.getElementById('filterAction');
+    const filterAdmin = document.getElementById('filterAdmin');
+    const resetFilters = document.getElementById('resetFilters');
+
+    const detailsModal = document.getElementById('detailsModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const closeModal = document.getElementById('closeModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    let currentPage = 1;
+    const perPage = 30;
+
+    // Загрузка данных
+    async function loadLogs(page = 1) {
+        currentPage = page;
+        showLoading(true);
+
+        const params = new URLSearchParams({
+            page: page,
+            per_page: perPage
+        });
+
+        if (filterEntityType.value) params.append('entity_type', filterEntityType.value);
+        if (filterAction.value) params.append('action', filterAction.value);
+        if (filterAdmin.value) params.append('admin_user_id', filterAdmin.value);
+
+        try {
+            const response = await fetch(`/admin/api/audit-logs?${params}`);
+            const data = await response.json();
+
+            renderLogs(data.items);
+            renderPagination(data);
+        } catch (error) {
+            console.error('Error loading logs:', error);
+            window.toast?.error('Ошибка', 'Не удалось загрузить данные');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function showLoading(show) {
+        loadingState.classList.toggle('u-hidden', !show);
+        tableWrapper.classList.toggle('u-hidden', show);
+    }
+
+    function renderLogs(logs) {
+        if (!logs.length) {
+            logsBody.innerHTML = '';
+            emptyState.classList.remove('u-hidden');
+            tableWrapper.classList.add('u-hidden');
+            return;
+        }
+
+        emptyState.classList.add('u-hidden');
+        tableWrapper.classList.remove('u-hidden');
+
+        logsBody.innerHTML = logs.map(log => `
+            <tr>
+                <td>
+                    <span class="text-muted">${formatDate(log.created_at)}</span>
+                </td>
+                <td>
+                    <strong>${log.admin_username || '—'}</strong>
+                </td>
+                <td>
+                    <span class="action-badge action-badge--${log.action}">
+                        ${log.action_display}
+                    </span>
+                </td>
+                <td>
+                    <span class="entity-type">${log.entity_type_display}</span>
+                </td>
+                <td>
+                    ${log.entity_name || '—'}
+                    ${log.entity_id ? `<span class="text-muted">#${log.entity_id}</span>` : ''}
+                </td>
+                <td>
+                    ${(log.old_data || log.new_data) ? `
+                        <button class="btn btn--secondary btn--small" onclick="showDetails(${log.id}, '${encodeURIComponent(JSON.stringify(log))}')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                        </button>
+                    ` : '—'}
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderPagination(data) {
+        if (data.pages <= 1) {
+            pagination.innerHTML = '';
+            return;
+        }
+
+        let html = '<div class="pagination__info">';
+        html += `Страница ${data.page} из ${data.pages} (всего ${data.total})`;
+        html += '</div><div class="pagination__buttons">';
+
+        if (data.has_prev) {
+            html += `<button class="btn btn--secondary btn--small" onclick="loadLogsPage(${data.page - 1})">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>`;
+        }
+
+        // Показываем номера страниц
+        const startPage = Math.max(1, data.page - 2);
+        const endPage = Math.min(data.pages, data.page + 2);
+
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<button class="btn ${i === data.page ? 'btn--primary' : 'btn--secondary'} btn--small" onclick="loadLogsPage(${i})">${i}</button>`;
+        }
+
+        if (data.has_next) {
+            html += `<button class="btn btn--secondary btn--small" onclick="loadLogsPage(${data.page + 1})">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>`;
+        }
+
+        html += '</div>';
+        pagination.innerHTML = html;
+    }
+
+    function formatDate(isoString) {
+        const date = new Date(isoString);
+        return date.toLocaleString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    // Глобальные функции
+    window.loadLogsPage = function(page) {
+        loadLogs(page);
+    };
+
+    window.showDetails = function(id, encodedData) {
+        const log = JSON.parse(decodeURIComponent(encodedData));
+
+        modalTitle.textContent = `${log.action_display}: ${log.entity_name || log.entity_type_display}`;
+
+        let html = '<div class="details-content">';
+
+        if (log.old_data) {
+            html += '<div class="details-section">';
+            html += '<h4>Было:</h4>';
+            html += '<pre class="details-json">' + formatJson(log.old_data) + '</pre>';
+            html += '</div>';
+        }
+
+        if (log.new_data) {
+            html += '<div class="details-section">';
+            html += '<h4>Стало:</h4>';
+            html += '<pre class="details-json">' + formatJson(log.new_data) + '</pre>';
+            html += '</div>';
+        }
+
+        html += '</div>';
+        modalBody.innerHTML = html;
+
+        detailsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    };
+
+    function formatJson(obj) {
+        return JSON.stringify(obj, null, 2)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    function closeDetailsModal() {
+        detailsModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // События
+    filterEntityType.addEventListener('change', () => loadLogs(1));
+    filterAction.addEventListener('change', () => loadLogs(1));
+    filterAdmin.addEventListener('change', () => loadLogs(1));
+
+    resetFilters.addEventListener('click', () => {
+        filterEntityType.value = '';
+        filterAction.value = '';
+        filterAdmin.value = '';
+        loadLogs(1);
+    });
+
+    closeModal.addEventListener('click', closeDetailsModal);
+    closeModalBtn.addEventListener('click', closeDetailsModal);
+    detailsModal.addEventListener('click', (e) => {
+        if (e.target === detailsModal) closeDetailsModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && detailsModal.classList.contains('active')) {
+            closeDetailsModal();
+        }
+    });
+
+    // Инициализация
+    loadLogs(1);
+});
+</script>
+
+<style>
+.action-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.action-badge--create {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.action-badge--update {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+}
+
+.action-badge--delete {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.action-badge--login,
+.action-badge--logout {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+}
+
+.action-badge--bulk_update,
+.action-badge--bulk_delete,
+.action-badge--export,
+.action-badge--import {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+}
+
+.entity-type {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-2);
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-elevated);
+}
+
+.pagination__info {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.pagination__buttons {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-12);
+    color: var(--color-text-muted);
+    min-height: 300px;
+}
+
+.details-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .details-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+.details-section {
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+}
+
+.details-section h4 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.details-json {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-size: 0.8125rem;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    overflow-x: auto;
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.6;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Улучшение таблицы */
+#logsTable th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+}
+
+#logsTable td {
+    vertical-align: middle;
+}
+
+/* Кнопка деталей */
+#logsTable .btn--small svg {
+    opacity: 0.7;
+}
+
+#logsTable .btn--small:hover svg {
+    opacity: 1;
+}
+</style>
+{% endblock %}

@@ -36,17 +36,9 @@
                 </div>
                 {% endif %}
 
-                {% if not dish.is_available or dish.is_vegetarian or dish.is_spicy %}
+                {% if not dish.is_available %}
                 <div class="dish-view__tags">
-                    {% if not dish.is_available %}
                     <span class="dish-view__tag dish-view__tag--gray">Временно отсутствует</span>
-                    {% endif %}
-                    {% if dish.is_vegetarian %}
-                    <span class="dish-view__tag dish-view__tag--green">Вегетарианское</span>
-                    {% endif %}
-                    {% if dish.is_spicy %}
-                    <span class="dish-view__tag dish-view__tag--red">Острое</span>
-                    {% endif %}
                 </div>
                 {% endif %}
             </div>

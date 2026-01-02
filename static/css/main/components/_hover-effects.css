@@ -1,0 +1,82 @@
+/* ===========================================
+   Enhanced Hover Effects
+   =========================================== */
+
+/* Category filter smooth hover */
+.category-filter__item {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-filter__item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(212, 160, 23, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-filter__item:hover::before {
+    opacity: 1;
+}
+
+/* Dish card enhanced hover */
+.dish-card {
+    position: relative;
+}
+
+.dish-card::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: calc(var(--radius-lg) + 2px);
+    background: linear-gradient(135deg, var(--mustard) 0%, transparent 50%);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+}
+
+.dish-card:hover::after {
+    opacity: 0.3;
+}
+
+/* Price bounce on card hover */
+.dish-card:hover .dish-card__price {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+
+/* Image zoom smoothing */
+.dish-card__image {
+    overflow: hidden;
+}
+
+.dish-card__image img {
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.3s ease;
+}
+
+.dish-card:hover .dish-card__image img {
+    transform: scale(1.08);
+}
+
+/* Category title underline animation */
+.category__title {
+    position: relative;
+    display: inline-block;
+}
+
+.category__title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--mustard);
+    transition: width 0.4s ease;
+}
+
+.category:hover .category__title::after {
+    width: 100%;
+}

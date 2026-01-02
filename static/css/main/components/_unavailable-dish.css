@@ -1,0 +1,64 @@
+/* ===========================================
+   Unavailable Dish Styles
+   =========================================== */
+
+.dish-card--unavailable {
+    pointer-events: auto;
+}
+
+.dish-card--unavailable .dish-card__image img,
+.dish-card--unavailable .no-image {
+    filter: grayscale(100%) brightness(0.5);
+    transition: filter 0.3s ease;
+}
+
+.dish-card--unavailable:hover .dish-card__image img,
+.dish-card--unavailable:hover .no-image {
+    filter: grayscale(50%) brightness(0.7);
+}
+
+.dish-card--unavailable .dish-card__content {
+    opacity: 0.6;
+}
+
+.dish-card--unavailable .dish-card__price {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+/* Overlay */
+.dish-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.dish-card__overlay span {
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+}
+
+.dish-card--unavailable:hover .dish-card__overlay {
+    opacity: 0.8;
+}
+
+/* Unavailable Badge */
+.badge--unavailable {
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--text);
+    border: 1px solid var(--border);
+    animation: pulse 2s ease-in-out infinite;
+}

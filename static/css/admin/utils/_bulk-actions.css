@@ -1,0 +1,107 @@
+/* ========================================
+   BULK ACTIONS
+   ======================================== */
+.bulk-toolbar {
+    margin-bottom: var(--space-4);
+    display: none;
+}
+
+.bulk-toolbar.active {
+    display: block;
+}
+
+.bulk-toolbar .card__body {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.bulk-toolbar__count {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.bulk-toolbar__count strong {
+    color: var(--color-primary);
+}
+
+.bulk-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-secondary);
+}
+
+.pagination__info {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.pagination__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.pagination__per-page {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-bg-secondary);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+}
+
+.pagination__pages {
+    display: flex;
+    gap: var(--space-1);
+}
+
+.pagination__page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 var(--space-2);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.pagination__page:hover {
+    background: var(--color-bg-secondary);
+}
+
+.pagination__page--active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.pagination__page--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+}

@@ -1,0 +1,69 @@
+/* ===========================================
+   Responsive Styles
+   =========================================== */
+
+@media (max-width: 640px) {
+    .hero {
+        padding: 3rem 1rem 2rem;
+    }
+
+    .hero__title {
+        font-size: 2rem;
+    }
+
+    .dish-view__nav {
+        margin-bottom: 1.5rem;
+    }
+
+    .dish-view__back-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .dish-view__title {
+        font-size: 1.5rem;
+    }
+
+    .dish-view__desc {
+        font-size: 1rem;
+    }
+
+    .dish-view__meta {
+        flex-direction: column;
+    }
+
+    .dish-view__price {
+        font-size: 2.5rem;
+    }
+
+    .category__title {
+        font-size: 1.25rem;
+    }
+
+    .dish-card__content {
+        padding: 0.875rem;
+    }
+
+    .dish-card__title {
+        font-size: 0.9rem;
+    }
+
+    .dish-card__price {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dish-view__back-link span {
+        display: none;
+    }
+
+    .dish-view__back-link {
+        padding: 0.75rem;
+        border-radius: 50%;
+    }
+
+    .dish-card__arrow {
+        display: none;
+    }
+}

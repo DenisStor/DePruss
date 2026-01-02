@@ -118,8 +118,6 @@ async def api_dish(dish_id: int, db: AsyncSession = Depends(get_db)):
         "price": float(dish.price),
         "weight": dish.weight,
         "calories": dish.calories,
-        "vegetarian": dish.is_vegetarian,
-        "spicy": dish.is_spicy,
         "images": {
             "thumbnail": dish.image_thumbnail,
             "small": dish.image_small,

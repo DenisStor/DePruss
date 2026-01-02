@@ -1,0 +1,18 @@
+/* ===========================================
+   Micro Animations
+   =========================================== */
+
+/* Button press effect */
+.btn, .category-filter__item, .dish-card {
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.btn:active, .category-filter__item:active {
+    transform: scale(0.97);
+}
+
+/* Icon spin on hover */
+.dish-card:hover .dish-card__arrow svg {
+    animation: none;
+    transform: translateX(3px);
+}
