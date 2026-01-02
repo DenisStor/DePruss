@@ -3,6 +3,11 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse, PlainTextResponse, Response
 from fastapi.middleware.gzip import GZipMiddleware
+try:
+    from brotli_asgi import BrotliMiddleware
+    BROTLI_AVAILABLE = True
+except ImportError:
+    BROTLI_AVAILABLE = False
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.base import BaseHTTPMiddleware
 from datetime import datetime
@@ -27,7 +32,7 @@ class CacheMiddleware(BaseHTTPMiddleware):
         if path.startswith("/static/"):
             if path.endswith((".css", ".js")):
                 response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
-            elif path.endswith((".webp", ".jpg", ".png")):
+            elif path.endswith((".webp", ".jpg", ".png", ".avif")):
                 response.headers["Cache-Control"] = "public, max-age=2592000"
 
         # API - короткий кеш с revalidate
@@ -53,6 +58,9 @@ app = FastAPI(
 )
 
 # Middleware (порядок важен!)
+# Brotli дает лучшее сжатие чем GZip (~20% меньше)
+if BROTLI_AVAILABLE:
+    app.add_middleware(BrotliMiddleware, quality=4, minimum_size=500)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 app.add_middleware(CacheMiddleware)
 
@@ -85,6 +93,14 @@ async def not_found_handler(request: Request, exc):
     with open("app/templates/errors/404.html", "r", encoding="utf-8") as f:
         content = f.read()
     return HTMLResponse(content=content, status_code=404)
+
+
+# Offline page for Service Worker
+@app.get("/offline", response_class=HTMLResponse)
+async def offline():
+    with open("app/templates/pages/offline.html", "r", encoding="utf-8") as f:
+        content = f.read()
+    return HTMLResponse(content=content)
 
 
 # robots.txt

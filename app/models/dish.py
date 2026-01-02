@@ -24,6 +24,15 @@ class Dish(Base):
     image_medium = Column(String(500), nullable=True)
     image_large = Column(String(500), nullable=True)
 
+    # Progressive loading optimization
+    image_tiny_base64 = Column(Text, nullable=True)  # Inline base64 LQIP (~200 bytes)
+    image_dominant_color = Column(String(10), nullable=True)  # #RRGGBB
+
+    # AVIF versions (better compression)
+    image_small_avif = Column(String(500), nullable=True)
+    image_medium_avif = Column(String(500), nullable=True)
+    image_large_avif = Column(String(500), nullable=True)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

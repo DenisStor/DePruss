@@ -79,12 +79,19 @@
     <div class="dishes-grid">
         {% for dish in category.dishes %}
         <a href="/dish/{{ dish.slug }}" class="dish-card scroll-reveal {{ 'dish-card--unavailable' if not dish.is_available else '' }}" data-delay="{{ loop.index0 * 50 }}">
-            <div class="dish-card__image">
+            <div class="dish-card__image progressive-image" style="background-color: {{ dish.image_dominant_color or '#1a1a1a' }}">
                 {% if dish.image_small %}
                 <img
-                    src="{{ dish.image_thumbnail or '/static/images/placeholder.webp' }}"
+                    src="{{ dish.image_tiny_base64 or dish.image_thumbnail or '/static/images/placeholder.webp' }}"
                     data-src="{{ dish.image_medium }}"
+                    data-small="{{ dish.image_small }}"
+                    data-medium="{{ dish.image_medium }}"
                     data-srcset="{{ dish.image_small }} 600w, {{ dish.image_medium }} 1200w"
+                    {% if dish.image_small_avif %}
+                    data-avif-small="{{ dish.image_small_avif }}"
+                    data-avif-medium="{{ dish.image_medium_avif }}"
+                    data-avif-srcset="{{ dish.image_small_avif }} 600w, {{ dish.image_medium_avif }} 1200w"
+                    {% endif %}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                     alt="{{ dish.name }}"
                     loading="lazy"

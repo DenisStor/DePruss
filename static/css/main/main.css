@@ -12,6 +12,7 @@
 @import 'components/_unavailable-dish.css';
 @import 'components/_hover-effects.css';
 @import 'components/_category-filter.css';
+@import 'components/_progressive-image.css';
 
 /* Pages */
 @import 'pages/_hero.css';

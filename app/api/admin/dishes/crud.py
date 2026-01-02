@@ -72,6 +72,13 @@ async def dish_create(
         dish.image_small = paths["small"]
         dish.image_medium = paths["medium"]
         dish.image_large = paths["large"]
+        # Progressive loading optimization
+        dish.image_tiny_base64 = paths.get("tiny_base64")
+        dish.image_dominant_color = paths.get("dominant_color")
+        # AVIF versions
+        dish.image_small_avif = paths.get("small_avif")
+        dish.image_medium_avif = paths.get("medium_avif")
+        dish.image_large_avif = paths.get("large_avif")
     await db.commit()
     return RedirectResponse(url="/admin/dishes", status_code=302)
 
@@ -124,5 +131,12 @@ async def dish_update(
         dish.image_small = paths["small"]
         dish.image_medium = paths["medium"]
         dish.image_large = paths["large"]
+        # Progressive loading optimization
+        dish.image_tiny_base64 = paths.get("tiny_base64")
+        dish.image_dominant_color = paths.get("dominant_color")
+        # AVIF versions
+        dish.image_small_avif = paths.get("small_avif")
+        dish.image_medium_avif = paths.get("medium_avif")
+        dish.image_large_avif = paths.get("large_avif")
     await db.commit()
     return RedirectResponse(url="/admin/dishes", status_code=302)

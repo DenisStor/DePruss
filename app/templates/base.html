@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Кухня Де Прусс — уютное кафе с авторской кухней">
-    <meta name="theme-color" content="#0A0A0A">
+    <meta name="theme-color" content="#D4A855">
     <title>{{ title }}</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/images/icon-192.png">
 
     <!-- Preconnect -->
     <link rel="preconnect" href="/static">
@@ -76,7 +80,11 @@
         </svg>
     </button>
 
+    <!-- Network and Progressive Loading -->
+    <script src="/static/js/network-adapter.js"></script>
+    <script src="/static/js/progressive-image.js"></script>
     <script src="/static/js/lazy-load.js" defer></script>
+    <script src="/static/js/sw-register.js" defer></script>
     <script>
         // Mobile menu toggle
         const menuToggle = document.getElementById('menuToggle');
