@@ -52,13 +52,14 @@ async def dish_new(
 async def dish_create(
     request: Request, name: str = Form(...), category_id: int = Form(...),
     description: str = Form(""), price: float = Form(...), weight: str = Form(""),
-    calories: int = Form(None), is_available: bool = Form(True),
+    calories: str = Form(""), is_available: bool = Form(True),
     sort_order: int = Form(0), image: UploadFile = File(None),
     admin: AdminUser = Depends(get_current_admin), db: AsyncSession = Depends(get_db)
 ):
     dish = Dish(
         name=name, slug=slugify(name, lowercase=True), category_id=category_id,
-        description=description, price=price, weight=weight, calories=calories,
+        description=description, price=price, weight=weight,
+        calories=int(calories) if calories else None,
         is_available=is_available, sort_order=sort_order
     )
     db.add(dish)
@@ -104,7 +105,7 @@ async def dish_edit(
 async def dish_update(
     dish_id: int, name: str = Form(...), category_id: int = Form(...),
     description: str = Form(""), price: float = Form(...), weight: str = Form(""),
-    calories: int = Form(None), is_available: bool = Form(False),
+    calories: str = Form(""), is_available: bool = Form(False),
     sort_order: int = Form(0), image: UploadFile = File(None),
     admin: AdminUser = Depends(get_current_admin), db: AsyncSession = Depends(get_db)
 ):
@@ -118,7 +119,7 @@ async def dish_update(
     dish.description = description
     dish.price = price
     dish.weight = weight
-    dish.calories = calories
+    dish.calories = int(calories) if calories else None
     dish.is_available = is_available
     dish.sort_order = sort_order
     if image and image.filename:
