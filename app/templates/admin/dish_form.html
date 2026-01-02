@@ -155,7 +155,7 @@
                             <button type="button" class="btn btn--secondary btn--small" onclick="document.getElementById('image').click()">
                                 Выбрать файл
                             </button>
-                            <p class="form-hint">JPG, PNG или WebP. Максимум 5MB</p>
+                            <p class="form-hint">JPG, PNG или WebP. Изображение будет автоматически сжато</p>
                         </div>
                         {% endif %}
                         <input type="file" id="image" name="image" accept="image/*" class="u-hidden" onchange="previewImage(this)">
@@ -231,13 +231,6 @@ updateCounts();
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
-
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error('Файл слишком большой', 'Максимальный размер файла — 5MB');
-            input.value = '';
-            return;
-        }
 
         // Validate file type
         if (!file.type.startsWith('image/')) {

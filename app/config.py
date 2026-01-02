@@ -32,7 +32,7 @@ class Settings(BaseSettings):
 
     # Image processing
     upload_dir: str = "static/uploads/dishes"
-    max_image_size: int = 50 * 1024 * 1024  # 50MB
+    max_image_size: int = 500 * 1024 * 1024  # 500MB - no practical limit
     image_sizes: dict = {
         "thumbnail": (50, 50),
         "small": (200, 200),
